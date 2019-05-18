@@ -23,13 +23,13 @@ class PelangganController extends Controller
     	return view('tambah');
  
     }
-     public function pesan($id)
+     public function pesan()
     {
     	// mengambil data dari table pelanggan
     	$pelanggan = DB::table('pelanggan')->get();
  
     	// mengirim data pelanggan ke view index
-    	return view('pesan',['id' => $id]);
+    	return view('pesan');
  
  
     }
@@ -49,21 +49,40 @@ class PelangganController extends Controller
 		'email' => $request->email
 	]);
 	// alihkan halaman ke halaman pelanggan
-	return redirect('/pelanggan/tambah/'.$ID);
+	return redirect('/pelanggan');
  
 }
 
   public function lihat(Request $id)
     {
     	// mengambil data dari table pelanggan
-    	$kamar = DB::table('kamar')->get();
- 
+    	// $ne = DB::table('pemesanan')->select('pemesanan.ID_Kamar')->whereBetween($id->cekin,['pemesanan.tglcheckin','pemesanan.tglcheckout'])->whereBetween($id->cekot,['pemesanan.tglcheckin','pemesanan.tglcheckout']);
+    	
+    	// $kamar = DB::table('pemesanan')->select('pemesanan.ID_Kamar','detail_kamar.nama_JK','detail_kamar.kapasitas','kamar.ID_JK','detail_kamar.harga_JK')
+    	// ->join('kamar','pemesanan.ID_Kamar','=','kamar.ID_Kamar')
+    	// ->join('detail_kamar','kamar.ID_JK','=','detail_kamar.ID_JK')
+    	// ->whereNotExist($ne)
+    	// ->get();
     	// mengirim data pelanggan ke view index
-//    	return view('pesan',['id' => $id]);
- return view('lihat',['kamar' => $kamar,'id'=> $id]);
+    	// $posts = DB::SELECT('select * from kamar,detail_kamar');
+    	$posts = DB::select('select DISTINCT pemesanan.ID_Kamar,detail_kamar.nama_JK,detail_kamar.kapasitas,detail_kamar.harga_JK FROM pemesanan INNER JOIN kamar on pemesanan.ID_Kamar = kamar.ID_Kamar INNER join detail_kamar on kamar.ID_JK = detail_kamar.ID_JK AND NOT EXISTS (SELECT DISTINCT pemesanan.ID_Kamar from pemesanan INNER join kamar on ? BETWEEN tglcheckin AND tglcheckout AND ? BETWEEN tglcheckin AND tglcheckout ) Order by ID_Kamar',[$id->cekin,$id->cekot]);
+   	// return view('pesan',['id' => $id]);
+
+
+$to = \Carbon\Carbon::createFromFormat('Y-m-d', $id->cekin);
+$from = \Carbon\Carbon::createFromFormat('Y-m-d', $id->cekot);
+$id->hari = $to->diffInDays($from);
+  return view('lihat',['kamar' => $posts,'id'=> $id]);
  
  	
     }
 
 
 }
+/* SELECT DISTINCT pemesanan.ID_Kamar,pemesanan.ID_Kamar,detail_kamar.nama_JK,detail_kamar.kapasitas,detail_kamar.harga_JK 
+FROM pemesanan 
+INNER JOIN kamar on pemesanan.ID_Kamar = kamar.ID_Kamar 
+INNER join detail_kamar on kamar.ID_JK = detail_kamar.ID_JK AND 
+NOT EXISTS (
+SELECT DISTINCT pemesanan.ID_Kamar 
+from pemesanan INNER join kamar on cekin BETWEEN tglcheckin AND tglcheckout AND cekot BETWEEN tglcheckin AND tglcheckout )

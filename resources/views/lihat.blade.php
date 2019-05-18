@@ -14,18 +14,24 @@
 	<br/>
 
 	<table border="1">
+
 		<tr>{{$id->cekin}}
 			{{$id->cekot}}
-			{{$id->id}}
+			{{$id->hari}}
 			<th>Kamar</th>
 			<th>Jenis</th>
+			<th>Harga/hari</th>
+			<th>Harga Total</th>
+			<th>   </th>
 		
 		</tr>
 		@foreach($kamar as $p)
 		<tr>
 			<td>{{ $p->ID_Kamar }}</td>
-			<td>{{ $p->ID_JK}} </td>
-
+			<td>{{ $p->nama_JK}} </td>
+			<td>{{ $p->harga_JK}}</td>
+			<td>{{ $p->harga_JK * $id->hari}}</td>
+			<td> <a href="/pelanggan/tambah/{{$p->ID_Kamar }}"> Pesan </a> </td>
 		</tr>
 		@endforeach
 	</table>

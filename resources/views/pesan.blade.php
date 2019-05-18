@@ -11,12 +11,12 @@
 	<br/>
 	<br/>
  
-	<form action="/pelanggan/lihat/{{$id}}" method="post">
+	<form action="/pelanggan/lihat" method="post">
 		{{ csrf_field() }}
 		Pilih Tanggal : <br/>
 		Checkin <input type="date" name="cekin" required="required"> <br/>
 		Checkout <input type="date" name="cekot" required="required"> <br/>
-		<input type="hidden" name="id"	value="{{$id}}">
+
 		<input type="submit" value="Cek">
 	</form>
  
